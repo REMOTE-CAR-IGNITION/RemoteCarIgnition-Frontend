@@ -41,7 +41,7 @@ export default function ConnectedVehiclesScreen({  }) {
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.headerText}>Connected Vehicles</Text>
-        <TouchableOpacity onPress={() => router.push('/(base)AddVehicleScreen')}>
+        <TouchableOpacity onPress={() => router.push('/(base)/AddVehicleScreen')}>
           <Feather name="plus-circle" size={24} color="#FFA500" />
         </TouchableOpacity>
       </View>
