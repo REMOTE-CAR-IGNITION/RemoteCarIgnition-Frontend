@@ -8,11 +8,12 @@ import { View} from 'react-native';
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
-export default function AuthLayout() {
+export default function baseLayout() {
 return (
   <View>
     <Stack>
     <Stack.Screen name="ConnectedVehiclesScreen" options={{ headerShown: false }} />
+    <Stack.Screen name="AddVehicleScreen" options={{ headerShown: false }} />
     <Stack.Screen name="+not-found" />
     </Stack>
     <StatusBar style="auto" />

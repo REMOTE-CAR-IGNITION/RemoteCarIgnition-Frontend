@@ -12,8 +12,10 @@ export default function AuthLayout() {
 return (
   <View>
     <Stack>
+    <Stack.Screen name="index" options={{ headerShown: false }} />
     <Stack.Screen name="LoginScreen" options={{ headerShown: false }} />
     <Stack.Screen name="SignUpScreen" options={{ headerShown: false }} />
+    <Stack.Screen name="ForgotPasswordScreen" options={{ headerShown: false }} />
     <Stack.Screen name="+not-found" />
     </Stack>
     <StatusBar style="auto" />

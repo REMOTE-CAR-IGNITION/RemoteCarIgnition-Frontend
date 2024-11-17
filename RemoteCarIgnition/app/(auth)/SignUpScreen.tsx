@@ -2,34 +2,19 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Feather } from '@expo/vector-icons';
-import { NavigationProp } from '@react-navigation/native';
+import { useRouter } from 'expo-router'; // Adjust based on your router setup
 
-// Define the navigation types
-type RootStackParamList = {
-  Signup: undefined;
-  Login: undefined;
-};
-
-type SignupScreenNavigationProp = NavigationProp<RootStackParamList, 'Signup'>;
-
-interface SignupScreenProps {
-  navigation: SignupScreenNavigationProp;
-}
-
-const SignupScreen: React.FC<SignupScreenProps> = ({ navigation }) => {
+export default function SignupScreen() {
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [agreeToTerms, setAgreeToTerms] = useState(false);
+  const router = useRouter(); // Using router for navigation
 
   const handleSignup = () => {
     // Implement signup logic here
-    if (password !== confirmPassword) {
-      alert("Passwords do not match!");
-      return;
-    }
     console.log('Signup pressed');
   };
 
@@ -89,13 +74,13 @@ const SignupScreen: React.FC<SignupScreenProps> = ({ navigation }) => {
         <TouchableOpacity style={styles.signupButton} onPress={handleSignup}>
           <Text style={styles.signupButtonText}>Sign Up</Text>
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => navigation.navigate('Login')}>
+        <TouchableOpacity onPress={() => router.push('/(auth)/LoginScreen')}>
           <Text style={styles.loginLink}>Already have an account? Log In</Text>
         </TouchableOpacity>
       </ScrollView>
     </SafeAreaView>
   );
-};
+}
 
 const styles = StyleSheet.create({
   container: {
@@ -156,5 +141,3 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
 });
-
-export default SignupScreen;

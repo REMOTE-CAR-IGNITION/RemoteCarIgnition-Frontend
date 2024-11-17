@@ -2,49 +2,22 @@ import React from 'react';
 import { View, Text, FlatList, TouchableOpacity, StyleSheet, Image } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Feather } from '@expo/vector-icons';
-import { NavigationProp } from '@react-navigation/native';
-
-// Define the Vehicle type
-type Vehicle = {
+import { useRouter } from 'expo-router'; // Adjust based on your router setup
+interface Vehicle {
   id: string;
   name: string;
   status: string;
   image: string;
-};
-
-// Sample vehicle data
-const vehicles: Vehicle[] = [
-  {
-    id: '1',
-    name: 'Toyota Prado',
-    status: 'Last Started: 3 hours ago',
-    image: 'https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?auto=format&fit=crop&q=80&w=2070&ixlib=rb-4.0.3',
-  },
-  {
-    id: '2',
-    name: 'Nissan X-Trail',
-    status: 'Connected: Active',
-    image: 'https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?auto=format&fit=crop&q=80&w=2070&ixlib=rb-4.0.3',
-  },
-];
-
-// Define the navigation types for the screen
-type RootStackParamList = {
-  ConnectedVehicles: undefined;
-  AddVehicle: undefined;
-  // Add other routes as needed
-};
-
-// Typing the navigation prop
-type ConnectedVehiclesScreenNavigationProp = NavigationProp<RootStackParamList, 'ConnectedVehicles'>;
-
-interface ConnectedVehiclesScreenProps {
-  navigation: ConnectedVehiclesScreenNavigationProp;
 }
 
-const ConnectedVehiclesScreen: React.FC<ConnectedVehiclesScreenProps> = ({ navigation }) => {
-  // Render each vehicle card
-  const renderVehicleCard = ({ item }: { item: Vehicle }) => (
+const vehicles = [
+  { id: '1', name: 'Toyota Prado', status: 'Last Started: 3 hours ago', image: 'https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?auto=format&fit=crop&q=80&w=2070&ixlib=rb-4.0.3' },
+  { id: '2', name: 'Nissan X-Trail', status: 'Connected: Active', image: 'https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?auto=format&fit=crop&q=80&w=2070&ixlib=rb-4.0.3' },
+];
+
+export default function ConnectedVehiclesScreen({  }) {
+  const router = useRouter(); // Using router for navigation
+  const renderVehicleCard = ({ item  }: { item: Vehicle }) => (
     <View style={styles.card}>
       <Image source={{ uri: item.image }} style={styles.vehicleImage} />
       <View style={styles.cardContent}>
@@ -68,19 +41,19 @@ const ConnectedVehiclesScreen: React.FC<ConnectedVehiclesScreenProps> = ({ navig
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.headerText}>Connected Vehicles</Text>
-        <TouchableOpacity onPress={() => navigation.navigate('AddVehicle')}>
+        <TouchableOpacity onPress={() => router.push('/(base)AddVehicleScreen')}>
           <Feather name="plus-circle" size={24} color="#FFA500" />
         </TouchableOpacity>
       </View>
       <FlatList
         data={vehicles}
         renderItem={renderVehicleCard}
-        keyExtractor={(item) => item.id}
+        keyExtractor={item => item.id}
         contentContainerStyle={styles.listContainer}
       />
     </SafeAreaView>
   );
-};
+}
 
 const styles = StyleSheet.create({
   container: {
@@ -159,5 +132,3 @@ const styles = StyleSheet.create({
     color: '#FF6347',
   },
 });
-
-export default ConnectedVehiclesScreen;

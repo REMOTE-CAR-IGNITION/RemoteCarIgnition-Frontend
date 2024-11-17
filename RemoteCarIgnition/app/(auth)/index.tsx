@@ -2,19 +2,11 @@ import React from 'react';
 import { View, Text, ImageBackground, StyleSheet, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Feather } from '@expo/vector-icons';
-import { NavigationProp } from '@react-navigation/native';
-import { RootStackParamList } from '../navigation/types';  // Import centralized types
+import { useRouter } from 'expo-router'; // Adjust based on your router setup
 
-// Define navigation prop type for the LandingScreen
-type LandingScreenNavigationProp = NavigationProp<RootStackParamList, 'Landing'>;
+export default function LandingScreen() {
+  const router = useRouter(); // Using router for navigation
 
-// Define the props interface that includes the navigation prop
-interface LandingScreenProps {
-  navigation: LandingScreenNavigationProp;
-}
-
-// Use the props interface for typing the component
-const LandingScreen: React.FC<LandingScreenProps> = ({ navigation }) => {
   return (
     <ImageBackground
       source={{ uri: 'https://images.unsplash.com/photo-1494905998402-395d579af36f?auto=format&fit=crop&q=80&w=2070&ixlib=rb-4.0.3' }}
@@ -29,13 +21,13 @@ const LandingScreen: React.FC<LandingScreenProps> = ({ navigation }) => {
         <View style={styles.buttonContainer}>
           <TouchableOpacity
             style={[styles.button, styles.getStartedButton]}
-            onPress={() => navigation.navigate('Signup')}
+            onPress={() => router.push('/(auth)/SignUpScreen')}
           >
             <Text style={styles.buttonText}>Get Started</Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={[styles.button, styles.signInButton]}
-            onPress={() => navigation.navigate('Login')}
+            onPress={() => router.push('/(auth)/LoginScreen')}
           >
             <Text style={[styles.buttonText, styles.signInText]}>Sign In</Text>
           </TouchableOpacity>
@@ -43,7 +35,7 @@ const LandingScreen: React.FC<LandingScreenProps> = ({ navigation }) => {
       </SafeAreaView>
     </ImageBackground>
   );
-};
+}
 
 const styles = StyleSheet.create({
   background: {
@@ -98,5 +90,3 @@ const styles = StyleSheet.create({
     color: '#FFA500',
   },
 });
-
-export default LandingScreen;

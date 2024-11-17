@@ -4,46 +4,41 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Feather } from '@expo/vector-icons';
 import { useRouter } from 'expo-router'; // Adjust based on your router setup
 
-export default function LoginScreen() {
+export default function ForgotPasswordScreen() {
   const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
   const router = useRouter(); // Using router for navigation
 
-  const handleLogin = () => {
-    // Implement login logic here
-    console.log('Login pressed');
+  const handleResetPassword = () => {
+    // Implement password reset logic here
+    console.log('Reset password pressed');
+    // After sending reset instructions, navigate back to the Login screen
+    router.back();
   };
 
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
         <Feather name="lock" size={40} color="#FFA500" />
-        <Text style={styles.headerText}>Welcome Back</Text>
+        <Text style={styles.headerText}>Forgot Password</Text>
       </View>
+      <Text style={styles.instructionText}>
+        Enter your email address below. We'll send you instructions to reset your password.
+      </Text>
       <View style={styles.inputContainer}>
         <TextInput
           style={styles.input}
-          placeholder="Email or Phone Number"
+          placeholder="Email Address"
           value={email}
           onChangeText={setEmail}
           keyboardType="email-address"
-        />
-        <TextInput
-          style={styles.input}
-          placeholder="Password"
-          value={password}
-          onChangeText={setPassword}
-          secureTextEntry
+          autoCapitalize="none"
         />
       </View>
-      <TouchableOpacity onPress={() => router.push('/(auth)ForgotPasswordScreen')}>
-        <Text style={styles.forgotPassword}>Forgot Password?</Text>
+      <TouchableOpacity style={styles.resetButton} onPress={handleResetPassword}>
+        <Text style={styles.resetButtonText}>Send Reset Instructions</Text>
       </TouchableOpacity>
-      <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
-        <Text style={styles.loginButtonText}>Log In</Text>
-      </TouchableOpacity>
-      <TouchableOpacity onPress={() => router.push('/(auth)/SignUpScreen')}>
-        <Text style={styles.signupLink}>Don't have an account? Sign Up</Text>
+      <TouchableOpacity onPress={() => router.back()}>
+        <Text style={styles.backToLoginText}>Back to Login</Text>
       </TouchableOpacity>
     </SafeAreaView>
   );
@@ -53,8 +48,8 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#FFFFFF',
-    justifyContent: 'center',
     padding: 20,
+    justifyContent: 'center',
   },
   header: {
     alignItems: 'center',
@@ -66,6 +61,12 @@ const styles = StyleSheet.create({
     color: '#333333',
     marginTop: 10,
   },
+  instructionText: {
+    fontSize: 16,
+    color: '#666666',
+    textAlign: 'center',
+    marginBottom: 20,
+  },
   inputContainer: {
     marginBottom: 20,
   },
@@ -74,26 +75,20 @@ const styles = StyleSheet.create({
     borderColor: '#CCCCCC',
     borderRadius: 8,
     padding: 15,
-    marginBottom: 15,
     fontSize: 16,
   },
-  forgotPassword: {
-    textAlign: 'right',
-    color: '#FFA500',
-    marginBottom: 20,
-  },
-  loginButton: {
+  resetButton: {
     backgroundColor: '#FFA500',
     paddingVertical: 15,
     borderRadius: 8,
     alignItems: 'center',
   },
-  loginButtonText: {
+  resetButtonText: {
     color: '#FFFFFF',
     fontSize: 18,
     fontWeight: 'bold',
   },
-  signupLink: {
+  backToLoginText: {
     textAlign: 'center',
     marginTop: 20,
     color: '#FFA500',
