@@ -10,6 +10,7 @@ export default function LoginScreen() {
   const router = useRouter(); // Using router for navigation
 
   const handleLogin = () => {
+    router.push('/(base)/ConnectedVehiclesScreen')
     // Implement login logic here
     console.log('Login pressed');
   };
