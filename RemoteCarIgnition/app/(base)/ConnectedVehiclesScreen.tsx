@@ -1,30 +1,50 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View, Text, FlatList, TouchableOpacity, StyleSheet, Image } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Feather } from '@expo/vector-icons';
-import { useRouter } from 'expo-router'; // Adjust based on your router setup
+import FingerPrintAuthModal from './FingerPrintAuthModal';
+import { useRouter } from 'expo-router';
+
 interface Vehicle {
   id: string;
   name: string;
   status: string;
   image: string;
 }
-
 const vehicles = [
   { id: '1', name: 'Toyota Prado', status: 'Last Started: 3 hours ago', image: 'https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?auto=format&fit=crop&q=80&w=2070&ixlib=rb-4.0.3' },
   { id: '2', name: 'Nissan X-Trail', status: 'Connected: Active', image: 'https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?auto=format&fit=crop&q=80&w=2070&ixlib=rb-4.0.3' },
 ];
 
-export default function ConnectedVehiclesScreen({  }) {
+export default function ConnectedVehiclesScreen() {
+  const [isAuthModalVisible, setIsAuthModalVisible] = useState(false);
+  const [selectedVehicle, setSelectedVehicle] = useState<Vehicle | null>(null);
   const router = useRouter(); // Using router for navigation
-  const renderVehicleCard = ({ item  }: { item: Vehicle }) => (
+  const handleIgnition = (vehicle: Vehicle ) => {
+    setSelectedVehicle(vehicle);
+    setIsAuthModalVisible(true);
+  };
+
+  const handleAuthSuccess = () => {
+    setIsAuthModalVisible(false);
+    // Implement the actual ignition logic here
+    console.log(`Starting ignition for ${selectedVehicle?.name}`);
+    // You might want to update the vehicle status or perform other actions here
+  };
+
+  const handleAuthCancel = () => {
+    setIsAuthModalVisible(false);
+    setSelectedVehicle(null);
+  };
+
+  const renderVehicleCard = ({ item }: { item: Vehicle }) => (
     <View style={styles.card}>
       <Image source={{ uri: item.image }} style={styles.vehicleImage} />
       <View style={styles.cardContent}>
         <Text style={styles.vehicleName}>{item.name}</Text>
         <Text style={styles.vehicleStatus}>{item.status}</Text>
         <View style={styles.buttonContainer}>
-          <TouchableOpacity style={styles.ignitionButton}>
+          <TouchableOpacity style={styles.ignitionButton} onPress={() => handleIgnition(item)}>
             <Feather name="power" size={20} color="#FFFFFF" />
             <Text style={styles.buttonText}>Ignition</Text>
           </TouchableOpacity>
@@ -50,6 +70,11 @@ export default function ConnectedVehiclesScreen({  }) {
         renderItem={renderVehicleCard}
         keyExtractor={item => item.id}
         contentContainerStyle={styles.listContainer}
+      />
+      <FingerPrintAuthModal
+        isVisible={isAuthModalVisible}
+        onSuccess={handleAuthSuccess}
+        onCancel={handleAuthCancel}
       />
     </SafeAreaView>
   );
