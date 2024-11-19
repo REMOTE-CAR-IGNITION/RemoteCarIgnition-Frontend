@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, FlatList, TouchableOpacity, StyleSheet, Image } from 'react-native';
+import { View, Text, FlatList, TouchableOpacity, StyleSheet, Image, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Feather } from '@expo/vector-icons';
 import FingerPrintAuthModal from './FingerPrintAuthModal';
@@ -10,26 +10,77 @@ interface Vehicle {
   name: string;
   status: string;
   image: string;
+  ip: string;  // Added IP address property
+  isIgnited: boolean; // Track ignition state
 }
-const vehicles = [
-  { id: '1', name: 'Toyota Prado', status: 'Last Started: 3 hours ago', image: 'https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?auto=format&fit=crop&q=80&w=2070&ixlib=rb-4.0.3' },
-  { id: '2', name: 'Nissan X-Trail', status: 'Connected: Active', image: 'https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?auto=format&fit=crop&q=80&w=2070&ixlib=rb-4.0.3' },
+
+// Example vehicles with IP addresses and initial ignition state
+const vehicles: Vehicle[] = [
+  { id: '1', name: 'Toyota Prado', status: 'Last Started: 3 hours ago', image: 'https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?auto=format&fit=crop&q=80&w=2070&ixlib=rb-4.0.3', ip: '192.168.1.101', isIgnited: false },
+  { id: '2', name: 'Nissan X-Trail', status: 'Connected: Active', image: 'https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?auto=format&fit=crop&q=80&w=2070&ixlib=rb-4.0.3', ip: '192.168.0.110', isIgnited: false },
 ];
 
 export default function ConnectedVehiclesScreen() {
   const [isAuthModalVisible, setIsAuthModalVisible] = useState(false);
   const [selectedVehicle, setSelectedVehicle] = useState<Vehicle | null>(null);
+  const [vehiclesData, setVehiclesData] = useState<Vehicle[]>(vehicles); // Dynamic vehicles state
   const router = useRouter(); // Using router for navigation
-  const handleIgnition = (vehicle: Vehicle ) => {
+
+  // Function to send a request to the vehicle's IP to activate the relay (ignition)
+  const activateRelay = async (vehicle: Vehicle) => {
+    try {
+      const response = await fetch(`http://${vehicle.ip}/relay/on`);
+      if (response.ok) {
+        updateVehicleStatus(vehicle.id, 'Ignition Started', true);
+        Alert.alert('Success', `${vehicle.name} ignition started!`);
+      } else {
+        Alert.alert('Error', `Failed to activate ignition for ${vehicle.name}`);
+      }
+    } catch (error) {
+      console.error(error);
+      Alert.alert('Error', 'Failed to connect to vehicle.');
+    }
+  };
+
+  // Function to deactivate the relay (turn off ignition)
+  const deactivateRelay = async (vehicle: Vehicle) => {
+    try {
+      const response = await fetch(`http://${vehicle.ip}/relay/off`);
+      if (response.ok) {
+        updateVehicleStatus(vehicle.id, 'Ignition Off', false);
+        Alert.alert('Success', `${vehicle.name} ignition turned off!`);
+      } else {
+        Alert.alert('Error', `Failed to deactivate ignition for ${vehicle.name}`);
+      }
+    } catch (error) {
+      console.error(error);
+      Alert.alert('Error', 'Failed to connect to vehicle.');
+    }
+  };
+
+  // Function to update vehicle status and ignition state in the state
+  const updateVehicleStatus = (vehicleId: string, newStatus: string, isIgnited: boolean) => {
+    const updatedVehicles = vehiclesData.map(vehicle => 
+      vehicle.id === vehicleId ? { ...vehicle, status: newStatus, isIgnited } : vehicle
+    );
+    setVehiclesData(updatedVehicles);
+  };
+
+  const handleIgnition = (vehicle: Vehicle) => {
     setSelectedVehicle(vehicle);
     setIsAuthModalVisible(true);
   };
 
   const handleAuthSuccess = () => {
     setIsAuthModalVisible(false);
-    // Implement the actual ignition logic here
-    console.log(`Starting ignition for ${selectedVehicle?.name}`);
-    // You might want to update the vehicle status or perform other actions here
+    // After successful authentication, send the request to start the ignition
+    if (selectedVehicle) {
+      if (selectedVehicle.isIgnited) {
+        deactivateRelay(selectedVehicle);  // If already ignited, turn it off
+      } else {
+        activateRelay(selectedVehicle);  // Otherwise, turn it on
+      }
+    }
   };
 
   const handleAuthCancel = () => {
@@ -46,9 +97,9 @@ export default function ConnectedVehiclesScreen() {
         <View style={styles.buttonContainer}>
           <TouchableOpacity style={styles.ignitionButton} onPress={() => handleIgnition(item)}>
             <Feather name="power" size={20} color="#FFFFFF" />
-            <Text style={styles.buttonText}>Ignition</Text>
+            <Text style={styles.buttonText}>{item.isIgnited ? 'Turn Off' : 'Ignition'}</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.disconnectButton}>
+          <TouchableOpacity style={styles.disconnectButton} onPress={() => updateVehicleStatus(item.id, 'Disconnected', false)}>
             <Feather name="x-circle" size={20} color="#FF6347" />
             <Text style={[styles.buttonText, styles.disconnectText]}>Disconnect</Text>
           </TouchableOpacity>
@@ -66,7 +117,7 @@ export default function ConnectedVehiclesScreen() {
         </TouchableOpacity>
       </View>
       <FlatList
-        data={vehicles}
+        data={vehiclesData}
         renderItem={renderVehicleCard}
         keyExtractor={item => item.id}
         contentContainerStyle={styles.listContainer}
