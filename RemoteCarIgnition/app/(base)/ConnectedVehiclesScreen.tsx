@@ -17,7 +17,7 @@ interface Vehicle {
 // Example vehicles with IP addresses and initial ignition state
 const vehicles: Vehicle[] = [
   { id: '1', name: 'Toyota Prado', status: 'Last Started: 3 hours ago', image: 'https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?auto=format&fit=crop&q=80&w=2070&ixlib=rb-4.0.3', ip: '192.168.1.101', isIgnited: false },
-  { id: '2', name: 'Nissan X-Trail', status: 'Connected: Active', image: 'https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?auto=format&fit=crop&q=80&w=2070&ixlib=rb-4.0.3', ip: '192.168.0.110', isIgnited: false },
+  { id: '2', name: 'Nissan X-Trail', status: 'Connected: Active', image: 'https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?auto=format&fit=crop&q=80&w=2070&ixlib=rb-4.0.3', ip: '192.168.0.154', isIgnited: false },
 ];
 
 export default function ConnectedVehiclesScreen() {

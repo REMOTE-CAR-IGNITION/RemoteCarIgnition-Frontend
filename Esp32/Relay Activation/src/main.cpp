@@ -3,11 +3,11 @@
 #include <WebServer.h>    // Include WebServer library for HTTP server
 
 // Wi-Fi credentials
-const char* ssid = "ROZAK";
-const char* password = "123456789";
+const char* ssid = "scit";
+const char* password = "12345678";
 
 // Relay pin
-#define RELAY_PIN 21 // Pin connected to the relay module
+#define RELAY_PIN 15 // Pin connected to the relay module
 
 // Global counter for logging results
 int counter = 0;
